@@ -4,7 +4,7 @@
     "Kenneth Wang <khkwang@gmail.com>"
   ],
   "description": "Just another angular grid solution",
-  "main": "kengrid-lamar.js",
+  "main": "kg-list.js",
   "keywords": [
     "list",
     "table",
@@ -21,7 +21,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "^1.3.0"
+    "angular": "^1.3.0",
     "bootstrap": "3.3.6",
     "fontawesome": "4.2.0"
   }
