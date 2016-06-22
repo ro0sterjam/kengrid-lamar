@@ -1,9 +1,9 @@
 (function() {
 
 'use strict';
-angular.module('kg.lamar', ['ngSanitize'])
+angular.module('kg.list', ['ngSanitize'])
 
-.directive('kgLamar', function () {
+.directive('kgList', function () {
     return {
         scope: {},
         bindToController: {
@@ -16,7 +16,7 @@ angular.module('kg.lamar', ['ngSanitize'])
             searchDelay: '=?'
         },
         restrict: 'AE',
-        controller: 'ListCtrl',
+        controller: 'KgListCtrl',
         controllerAs: 'vm',
         template: ' <div> \
                         <div class="panel panel-default"> \
@@ -77,7 +77,7 @@ angular.module('kg.lamar', ['ngSanitize'])
     };
 })
 
-.controller('ListCtrl', ['$sce', '$interpolate', '$filter', function ($sce, $interpolate, $filter) {
+.controller('KgListCtrl', ['$sce', '$interpolate', '$filter', function ($sce, $interpolate, $filter) {
     var vm = this;
 
     vm.searchDelay = vm.searchDelay && parseInt(vm.searchDelay, 10) || 300;
@@ -145,6 +145,72 @@ angular.module('kg.lamar', ['ngSanitize'])
             });
         }
     });
+}]);
+
+angular.module('kg.list.paged', ['kg.list', 'ui.bootstrap'])
+
+.directive('kgListPaged', function () {
+    return {
+        scope: {},
+        bindToController: {
+            onPageLoad: '&?',
+            columns: '=',
+            actions: '=',
+            defaultSortBy: '@',
+            pageSize: '@',
+            maxPages: '@',
+            registerControls: '&?',
+            searchDelay: '=?'
+        },
+        restrict: 'E',
+        controller: 'KgListPagedCtrl',
+        controllerAs: 'vm',
+        template: ' <uib-pagination ng-show="vm.page" class="pagination-sm disabled" boundary-links="true" ng-change="vm.loadPage(vm.pageNum, vm.pageSize, vm.sortBy, vm.filters)" items-per-page="vm.pageSize" total-items="vm.page.totalElements" ng-model="vm.pageNum" max-size="vm.maxPages" num-pages="vm.page.totalPages"></uib-pagination> \
+                    <div class="clearfix"></div> \
+                    <kg-list data="vm.page.data" columns="vm.columns" actions="vm.actions" on-sort-by="vm.onSortBy(property, direction)" on-filter-by="vm.onFilterBy(filters)" default-sort-by="{{ vm.sortBy }}" search-delay="vm.searchDelay"></kg-list> \
+                    <div class="clearfix"></div> \
+                    <uib-pagination ng-show="vm.page" class="pagination-sm disabled" boundary-links="true" ng-change="vm.loadPage(vm.pageNum, vm.pageSize, vm.sortBy, vm.filters)" items-per-page="vm.pageSize" total-items="vm.page.totalElements" ng-model="vm.pageNum" max-size="vm.maxPages" num-pages="vm.page.totalPages"></uib-pagination>'
+    };
+})
+
+.controller('KgListPagedCtrl', ['$q', function ($q) {
+    var vm = this;
+
+    vm.searchDelay = vm.searchDelay || 300;
+
+    vm.pageNum = 1;
+    vm.pageSize = vm.pageSize || 20;
+    vm.sortBy = vm.defaultSortBy || vm.columns[0].name + ',asc';
+    vm.maxPages = vm.maxPages || 5;
+
+    vm.loadPage = function (pageNum, pageSize, sortBy, filters) {
+        if (vm.page) vm.page.data = null;
+        $q.when(vm.onPageLoad({pageNum: pageNum, pageSize: pageSize, sortBy: sortBy, filters: filters})).then(function (page) {
+            vm.page = page;
+        });
+    }
+
+    vm.onSortBy = function (property, direction) {
+        vm.pageNum = 1;
+        vm.sortBy = property + ',' + direction;
+        vm.loadPage(vm.pageNum, vm.pageSize, vm.sortBy, vm.filters);
+    }
+
+    vm.onFilterBy = function(filters) {
+        vm.pageNum = 1;
+        vm.filters = filters;
+        vm.loadPage(vm.pageNum, vm.pageSize, vm.sortBy, vm.filters);
+    }
+
+    vm.refresh = function () {
+        vm.loadPage(vm.pageNum, vm.pageSize, vm.sortBy, vm.filters);
+    }
+
+    vm.refresh();
+
+    if (typeof vm.registerControls === 'function') {
+        vm.registerControls({'controls': {'refresh': vm.refresh}});
+    }
 }]);
 
 })();
