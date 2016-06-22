@@ -1,10 +1,10 @@
 {
-  "name": "rj-list",
+  "name": "kengrid-lamar",
   "authors": [
     "Kenneth Wang <khkwang@gmail.com>"
   ],
   "description": "Just another angular grid solution",
-  "main": "rj-list.js",
+  "main": "kengrid-lamar.js",
   "keywords": [
     "list",
     "table",

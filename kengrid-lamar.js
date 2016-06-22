@@ -1,9 +1,9 @@
 (function() {
 
 'use strict';
-angular.module('rj.list', ['ngSanitize'])
+angular.module('kg.lamar', ['ngSanitize'])
 
-.directive('rjList', function () {
+.directive('kgLamar', function () {
     return {
         scope: {},
         bindToController: {
