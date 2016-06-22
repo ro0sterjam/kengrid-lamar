@@ -1,0 +1,26 @@
+{
+  "name": "rj-list",
+  "authors": [
+    "Kenneth Wang <khkwang@gmail.com>"
+  ],
+  "description": "Just another angular grid solution",
+  "main": "rj-list.js",
+  "keywords": [
+    "list",
+    "table",
+    "grid",
+    "angular"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.3.0"
+  }
+}
